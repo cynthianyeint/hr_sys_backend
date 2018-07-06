@@ -26,5 +26,9 @@ from hr_system_app import views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
+    url(r'^api/v1/user/list/$', views.user_list),
+    url(r'^api/v1/user/detail/$', views.user_detail),
     url(r'^api/v1/company/list/$', views.company_list),
+    url(r'^api/v1/company/detail/$', views.company_detail)
+    url(r'^api/v1/staff/list', views.staff_list)
 ]

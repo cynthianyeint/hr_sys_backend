@@ -2,18 +2,32 @@ import os,django
 
 def populate():
 	admin_group = add_group('Admin')
+	staff_group = add_group('Staff')
 
-	test_user = add_user(username='testcompany@gmail.com',
-		email= 'testcompany@gmail.com',
+	company_user = add_user(username='testcompany@gmail.com',
+		email='testcompany@gmail.com',
 		password='test@1234',
 		group=admin_group)
 
-	add_company(company_name='testcompany', 
+	staff_user = add_user(username='teststaff@gmail.com',
+		email='teststaff@gmail.com',
+		password='test@1234',
+		group=staff_group)
+
+	company = add_company(company_name='testcompany', 
 		phone_number='1234',
-		user=test_user)
+		user=company_user)
+
+	add_staff(user=staff_user, company=company,
+		title='mrs.',
+		first_name='test',
+		last_name='staff',
+		dob='1993-2-14',
+		mobile_number='12345678',
+		home_phone_number='87654321')
 
 def add_group(name):
-	group = Group.objects.create(name=name)
+	group = Group.objects.get_or_create(name=name)[0]
 	return group
 
 def add_user(username,email,password,group):
@@ -32,23 +46,17 @@ def add_user(username,email,password,group):
 	return user
 
 def add_company(company_name,phone_number,user):
-	# company = None
-	# if Company.objects.filter(company_name=company_name).exists():
-	# 	company = Company.objects.get(company_name=company_name)
-	# else:
-	# 	company = Company()
-	# 	company.company_name = company_name
-	# 	company.phone_number = phone_number
-	# 	company.user = user
-	# 	company.save()
 	company = Company.objects.get_or_create(company_name=company_name,phone_number=phone_number,user=user)[0]
-
 	return company
+
+def add_staff(user,company,title,first_name,last_name,dob,mobile_number,home_phone_number):
+	staff = Staff.objects.get_or_create(user=user,company=company,title=title,first_name=first_name,last_name=last_name,dob=dob,mobile_number=mobile_number,home_phone_number=home_phone_number)[0]
+	return staff
 
 
 # Start execution here!
 if __name__ == '__main__':
-    print "Starting HR system population script..."
+    print ("Starting HR system population script...")
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hr_system.settings")
     django.setup()
 
@@ -58,3 +66,4 @@ if __name__ == '__main__':
     from  django.contrib.auth.hashers import *
     
     populate()
+
